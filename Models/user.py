@@ -13,5 +13,6 @@ class User:
         self.password = password
         self.accountType = accountType
 
+
     def addUser(self, id, email, user_name, password, accountType):
-        if 
+        pass
