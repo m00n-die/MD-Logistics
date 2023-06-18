@@ -8,18 +8,20 @@ regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
 conn = sqlite3.connect("mdl.db")
 cur = conn.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS inventory (id INTEGER PRIMARY KEY, item_name TEXT, price REAL, item_qty INTEGER)")
+cur.execute("CREATE TABLE IF NOT EXISTS inventory (id INTEGER PRIMARY KEY, itemName TEXT, price REAL, quantity INTEGER)")
 cur.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, userName TEXT, email TEXT, password TEXT)")
 
 
 def emailValidator(email):
-    """Function that checks and validates an email address
-    and stops execution of code if email is not valid"""
+    """Checks and validates an email address to make sure it is in a valid format
+    (i.e user@service_provider.com) and stops execution of code if email is not valid"""
     if not (re.fullmatch(regex, email)):
         print("Invalid Email")
         exit()
 
 def userNameValidator(userName):
+    """Checks if userName already exists int the
+    database and prompts user to try a different one if userName exists"""
     userName = str(userName)
     cur.execute("SELECT userName from users WHERE userName=?", (userName,))
     exists = cur.fetchone()
@@ -165,13 +167,35 @@ def updateUserEmail():
     else:
         print("Login unsuccessful. Please try again")
 
-def add_item():
+def addItem():
     """Function that adds an item to the inventory table"""
-    name = input("Name of item: ")
-    price = input("Price of {}: ".format(name))
-    qty = input("Quantity of {}: ".format(name))
-    cur.exectute("INSERT INTO inventory VALUES (NULL, ?, ?, ?)", (name, price, qty))
-    
+    itemName = input("Enter name of item: ")
+    confirmName = input("Re-enter name: ")
+    if confirmName == itemName:
+        price = input("Enter price of {}: ".format(itemName))
+        qty = input("Quantity of {}: ".format(itemName))
+        cur.execute("INSERT INTO inventory VALUES (NULL, ?, ?, ?)", (itemName, price, qty))
+        conn.commit()
+        print("Item added successfully")
+    else:
+        print("Name mismatch please check and try again.")
+
+def deleteItem():
+    """Function that deletes an item from the inventory"""
+    itemName = input("Enter name of item to be deleted: ")
+    cur.execute("SELECT itemName from inventory WHERE itemName=?", (itemName,))
+    exists = cur.fetchone()
+    if exists:
+        print("This action cannot be done")
+        choice = input(f"Delete item: '{itemName}'. Y/N: ")
+        if choice == 'Y':
+            cur.execute("DELETE FROM inventory WHERE itemName=?", (itemName,))
+        else:
+            print("Action borted")
+            exit()
+    else:
+        print("Item does not exist")
+       
 
 # addUser()
 # loginUser()
