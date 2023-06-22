@@ -19,7 +19,7 @@ class User:
         self.email = email
         self.password = password
 
-    def addUser(self, userName, email, password):
+    def addUser():
         """Creates a new user and adds the user to the database"""
         userName = input("Please enter your User Name: ")
         userNameValidator(userName)

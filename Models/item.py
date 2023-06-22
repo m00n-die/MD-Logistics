@@ -47,3 +47,43 @@ class Item():
                 exit()
         else:
             print("Item does not exist")
+
+    def update(id, price=None, quantity=None):
+        """Function that takes optional input and then updates the itemName column
+        with the arguments provided"""
+        if price:
+            cur.execute('UPDATE inventory SET price=? WHERE id=?', (price, id))
+        if quantity:
+            cur.execute('UPDATE inventory SET quantity=? WHERE id=?', (quantity, id))
+        conn.commit()
+
+
+    def updateItem():
+        """Updates the data on an item"""
+        itemName = input('Enter name of the item to be updated: ')
+        cur.execute('SELECT itemName from inventory WHERE itemName=?', (itemName,))
+        exists =cur.fetchone()
+        if exists:
+            Item.update()
+        else:
+            print('Item does not exist. Please check the name and try again!')
+            exit()
+
+    def viewItems():
+        """Function that lists all items in the database to view"""
+        cur.execute('SELECT * FROM inventory')
+        rows = cur.fetchall()
+        return rows
+
+    def searchItem():
+        """Function that allows users to search for a specific itme"""
+        itemName = input('Enter name of the item you want to search:')
+        cur.execute('SELECT itemName FROM inventory WHERE itemName=?', (itemName,))
+        exists = cur.fetchone()
+        if exists:
+            cur.execute("SELECT * FROM inventory WHERE itemName=?", (itemName,))
+            rows = cur.fetchall()
+            return rows
+        else:
+            print("Item does not exist.")
+            exit()
