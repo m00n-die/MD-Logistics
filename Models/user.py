@@ -94,57 +94,57 @@ class User:
             exit()
         conn.commit()
 
-def updateUserPassword():
-    """Function that updates the information or data on a user"""
-    print("Please login again with your old password.")
-    print("")
-    User.loginUser()
-    if User.loginStatus == True:
-        email = input("Enter your account email: ")
-        emailValidator(email)
-        emailHash = hashlib.md5(email.encode())
-        emailDigest = emailHash.hexdigest()
-        cur.execute("SELECT email FROM users WHERE email=?", (emailDigest,))
-        exists = cur.fetchone()
-        if exists:
-            newPassword = getpass.getpass(prompt="Enter your new password: ")
-            newPasswordHash = hashlib.md5(newPassword.encode())
-            confirmPassword = getpass.getpass(prompt="Confirm password: ")
-            confirmPasswordHash = hashlib.md5(confirmPassword.encode())
-            if confirmPasswordHash.hexdigest() == newPasswordHash.hexdigest():
-                password = confirmPasswordHash.hexdigest()
-                cur.execute("UPDATE users SET password=? WHERE email=?", (password, emailDigest))
-                conn.commit()
-                print("Password successfully updated")
-            else:
-                print("Password mismatch")
+    def updateUserPassword():
+        """Function that updates the information or data on a user"""
+        print("Please login again with your old password.")
+        print("")
+        User.loginUser()
+        if User.loginStatus == True:
+            email = input("Enter your account email: ")
+            emailValidator(email)
+            emailHash = hashlib.md5(email.encode())
+            emailDigest = emailHash.hexdigest()
+            cur.execute("SELECT email FROM users WHERE email=?", (emailDigest,))
+            exists = cur.fetchone()
+            if exists:
+                newPassword = getpass.getpass(prompt="Enter your new password: ")
+                newPasswordHash = hashlib.md5(newPassword.encode())
+                confirmPassword = getpass.getpass(prompt="Confirm password: ")
+                confirmPasswordHash = hashlib.md5(confirmPassword.encode())
+                if confirmPasswordHash.hexdigest() == newPasswordHash.hexdigest():
+                    password = confirmPasswordHash.hexdigest()
+                    cur.execute("UPDATE users SET password=? WHERE email=?", (password, emailDigest))
+                    conn.commit()
+                    print("Password successfully updated")
+                else:
+                    print("Password mismatch")
                     
-    else:
-        print("Login unsuccessful. Please try again")                
+        else:
+            print("Login unsuccessful. Please try again")                
 
-def updateUserEmail():
-    """Updates the email of a user. User must first be logged in to prform this action"""
-    print("Please login")
-    User.loginUser()  
-    if User.loginstatus == True:
-        oldEmail = input("Enter your old email: ")
-        oldEmailHash = hashlib.md5(oldEmail.encode())
-        oldEmailDigest = oldEmailHash.hexdigest()
-        cur.execute("SELECT email FROM users WHERE email=?", (oldEmailDigest,))
-        exists = cur.fetchone()
-        if exists:
-            newEmail = input("Enter your new email address: ")
-            emailValidator(newEmail)
-            newEmailHash = hashlib.md5(newEmail.encode())
-            confirmEmail = input("Confirm new email: ")
-            emailValidator(confirmEmail)
-            confirmEmailHash = hashlib.md5(confirmEmail.encode())
-            if confirmEmailHash.hexdigest() == newEmailHash.hexdigest():
-                email = confirmEmailHash.hexdigest()
-                cur.execute("UPDATE users SET email=? WHERE email=?", (email, oldEmailDigest))
-                conn.commit()
-                print("Email successfully updated")
-            else:
-                print("Password mismatch")
-    else:
-        print("Login unsuccessful. Please try again")
+    def updateUserEmail():
+        """Updates the email of a user. User must first be logged in to prform this action"""
+        print("Please login")
+        User.loginUser()  
+        if User.loginstatus == True:
+            oldEmail = input("Enter your old email: ")
+            oldEmailHash = hashlib.md5(oldEmail.encode())
+            oldEmailDigest = oldEmailHash.hexdigest()
+            cur.execute("SELECT email FROM users WHERE email=?", (oldEmailDigest,))
+            exists = cur.fetchone()
+            if exists:
+                newEmail = input("Enter your new email address: ")
+                emailValidator(newEmail)
+                newEmailHash = hashlib.md5(newEmail.encode())
+                confirmEmail = input("Confirm new email: ")
+                emailValidator(confirmEmail)
+                confirmEmailHash = hashlib.md5(confirmEmail.encode())
+                if confirmEmailHash.hexdigest() == newEmailHash.hexdigest():
+                    email = confirmEmailHash.hexdigest()
+                    cur.execute("UPDATE users SET email=? WHERE email=?", (email, oldEmailDigest))
+                    conn.commit()
+                    print("Email successfully updated")
+                else:
+                    print("Password mismatch")
+        else:
+            print("Login unsuccessful. Please try again")
